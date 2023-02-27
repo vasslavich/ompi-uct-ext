@@ -35,6 +35,7 @@
 #include "opal/util/argv.h"
 #include "opal/util/output.h"
 #include "opal/util/show_help.h"
+#include "ompi/errhandler/errhandler.h"
 
 OBJ_CLASS_INSTANCE(mca_btl_base_selected_module_t, opal_list_item_t, NULL, NULL);
 
@@ -166,6 +167,7 @@ int mca_btl_base_select(bool enable_progress_threads, bool enable_mpi_threads)
     /* Finished querying all components.  Check for the bozo case. */
 
     if (0 == opal_list_get_size(&mca_btl_base_modules_initialized)) {
+        OMPI_LOG_PRINT("");
         opal_show_help("help-mca-base.txt", "find-available:none found", true, "btl",
                        opal_process_info.nodename, "btl");
         return OPAL_ERROR;

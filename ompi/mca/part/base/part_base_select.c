@@ -39,6 +39,7 @@
 #include "ompi/mca/part/part.h"
 #include "ompi/mca/part/base/base.h"
 #include "ompi/proc/proc.h"
+#include "ompi/errhandler/errhandler.h"
 
 typedef struct opened_component_t {
   opal_list_item_t super;
@@ -149,6 +150,7 @@ int mca_part_base_select(bool enable_progress_threads,
     /* Finished querying all components.  Check for the bozo case. */
 
     if( NULL == best_component ) {
+        OMPI_LOG_PRINT("");
         opal_show_help("help-mca-base.txt", "find-available:none found",
                        true, "part",
                        opal_process_info.nodename,

@@ -33,7 +33,7 @@
 #include "mpi.h"
 #include "opal_stdint.h"
 #include "opal/util/os_path.h"
-
+#include "ompi/errhandler/errhandler.h"
 #include "ompi/communicator/communicator.h"
 #include "ompi/group/group.h"
 #include "ompi/mca/coll/coll.h"
@@ -137,6 +137,8 @@ mca_coll_base_module_t *ompi_coll_adapt_comm_query(struct ompi_communicator_t * 
             int *priority)
 {
     mca_coll_adapt_module_t *adapt_module;
+    
+    OMPI_LOG_PRINT("coll adapter query");
 
     /* If we're intercomm, or if there's only one process in the communicator */
     if (OMPI_COMM_IS_INTER(comm) || 1 == ompi_comm_size(comm)) {

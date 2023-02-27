@@ -26,6 +26,7 @@
 #include "ompi/mca/pml/base/pml_base_bsend.h"
 #include "opal/mca/common/ucx/common_ucx.h"
 #include "pml_ucx_request.h"
+#include "ompi/errhandler/errhandler.h"
 
 #include <inttypes.h>
 
@@ -202,8 +203,12 @@ int mca_pml_ucx_open(void)
     ucp_config_t *config;
     ucs_status_t status;
 
+    OMPI_LOG_PRINT("mca_pml_ucx_open");
+    
     /* Check version */
     ucp_get_version(&major_version, &minor_version, &release_number);
+    
+    OMPI_LOG_PRINT("mca_pml_ucx_open");
     PML_UCX_VERBOSE(1, "mca_pml_ucx_open: UCX version %u.%u.%u",
                     major_version, minor_version, release_number);
 
@@ -221,10 +226,13 @@ int mca_pml_ucx_open(void)
     }
 
     /* Read options */
+    OMPI_LOG_PRINT("mca_pml_ucx_open");
     status = ucp_config_read("MPI", NULL, &config);
     if (UCS_OK != status) {
         return OMPI_ERROR;
     }
+    
+    OMPI_LOG_PRINT("mca_pml_ucx_open");
 
     /* Initialize UCX context */
     params.field_mask        = UCP_PARAM_FIELD_FEATURES |
@@ -248,6 +256,7 @@ int mca_pml_ucx_open(void)
     params.field_mask       |= UCP_PARAM_FIELD_ESTIMATED_NUM_PPN;
 #endif
 
+    OMPI_LOG_PRINT("mca_pml_ucx_open");
     status = ucp_init(&params, config, &ompi_pml_ucx.ucp_context);
     ucp_config_release(config);
 
@@ -260,6 +269,7 @@ int mca_pml_ucx_open(void)
 #if HAVE_UCP_ATTR_MEMORY_TYPES
     attr.field_mask       |= UCP_ATTR_FIELD_MEMORY_TYPES;
 #endif
+    OMPI_LOG_PRINT("mca_pml_ucx_open");
     status = ucp_context_query(ompi_pml_ucx.ucp_context, &attr);
     if (UCS_OK != status) {
         ucp_cleanup(ompi_pml_ucx.ucp_context);
@@ -845,6 +855,8 @@ static inline ucs_status_ptr_t mca_pml_ucx_common_send(ucp_ep_h ep, const void *
                                                        mca_pml_base_send_mode_t mode,
                                                        ucp_send_callback_t cb)
 {
+    OMPI_LOG_PRINT("send with mode %i", (int)mode);
+    
     if (OPAL_UNLIKELY(MCA_PML_BASE_SEND_BUFFERED == mode)) {
         return mca_pml_ucx_bsend(ep, buf, count, datatype, tag);
     } else if (OPAL_UNLIKELY(MCA_PML_BASE_SEND_SYNCHRONOUS == mode)) {
@@ -866,6 +878,7 @@ mca_pml_ucx_common_send_nbx(ucp_ep_h ep, const void *buf,
 {
     pml_ucx_datatype_t *op_data = mca_pml_ucx_get_op_data(datatype);
 
+    OMPI_LOG_PRINT("send with mode %i", (int)mode);
     if (OPAL_UNLIKELY(MCA_PML_BASE_SEND_BUFFERED == mode)) {
         return mca_pml_ucx_bsend(ep, buf, count, datatype, tag);
     } else if (OPAL_UNLIKELY(MCA_PML_BASE_SEND_SYNCHRONOUS == mode)) {
@@ -895,6 +908,7 @@ int mca_pml_ucx_isend(const void *buf, size_t count, ompi_datatype_t *datatype,
 
     ep = mca_pml_ucx_get_ep(comm, dst);
     if (OPAL_UNLIKELY(NULL == ep)) {
+        OMPI_LOG_PRINT("ERROR: send with mode %i to a NULL ep", (int)mode);
         return OMPI_ERROR;
     }
 

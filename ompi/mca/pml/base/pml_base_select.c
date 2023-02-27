@@ -42,6 +42,7 @@
 #include "ompi/mca/pml/pml.h"
 #include "ompi/mca/pml/base/base.h"
 #include "ompi/proc/proc.h"
+#include "ompi/errhandler/errhandler.h"
 
 typedef struct opened_component_t {
   opal_list_item_t super;
@@ -95,6 +96,7 @@ int mca_pml_base_select(bool enable_progress_threads,
                 continue;
             }
 
+            OMPI_LOG_PRINT("component name is %s", component->pmlm_version.mca_component_name);
             if(0 == strncmp(component->pmlm_version.mca_component_name,
                             tmp_val, strlen(component->pmlm_version.mca_component_name)) ) {
                 found_pml = true;
@@ -107,6 +109,7 @@ int mca_pml_base_select(bool enable_progress_threads,
                                      "select: component %s not in the include list",
                                      component->pmlm_version.mca_component_name );
 
+            OMPI_LOG_PRINT("component is %s not in the include list", component->pmlm_version.mca_component_name);
             continue;
         }
 
@@ -115,6 +118,8 @@ int mca_pml_base_select(bool enable_progress_threads,
             opal_output_verbose( 10, ompi_pml_base_framework.framework_output,
                                  "select: no init function; ignoring component %s",
                                  component->pmlm_version.mca_component_name );
+            
+            OMPI_LOG_PRINT("component %s ignoring", component->pmlm_version.mca_component_name);
             continue;
         }
 
@@ -123,13 +128,17 @@ int mca_pml_base_select(bool enable_progress_threads,
                              "select: initializing %s component %s",
                              component->pmlm_version.mca_type_name,
                              component->pmlm_version.mca_component_name );
+        OMPI_LOG_PRINT("component init %s, %s",component->pmlm_version.mca_type_name, component->pmlm_version.mca_component_name);
         priority = best_priority;
         module = component->pmlm_init(&priority, enable_progress_threads,
                                       enable_mpi_threads);
+        
+        OMPI_LOG_PRINT("component %s has priority %i", component->pmlm_version.mca_component_name, priority);
         if (NULL == module) {
             opal_output_verbose( 10, ompi_pml_base_framework.framework_output,
                                  "select: init returned failure for component %s",
                                  component->pmlm_version.mca_component_name );
+            OMPI_LOG_PRINT("component %s, null module",component->pmlm_version.mca_component_name);
             continue;
         }
 
@@ -153,6 +162,7 @@ int mca_pml_base_select(bool enable_progress_threads,
     /* Finished querying all components.  Check for the bozo case. */
 
     if( NULL == best_component ) {
+        OMPI_LOG_PRINT("");
         opal_show_help("help-mca-base.txt", "find-available:none found",
                        true, "pml",
                        opal_process_info.nodename,

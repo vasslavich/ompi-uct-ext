@@ -54,6 +54,8 @@ mca_coll_self_comm_query(struct ompi_communicator_t *comm,
 {
     mca_coll_self_module_t *module;
 
+    OMPI_LOG_PRINT("coll self query");
+    
     /* We only work on intracommunicators of size 1 */
 
     if (!OMPI_COMM_IS_INTER(comm) && 1 == ompi_comm_size(comm)) {

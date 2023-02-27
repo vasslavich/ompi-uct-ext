@@ -91,6 +91,8 @@ mca_coll_inter_comm_query(struct ompi_communicator_t *comm, int *priority)
 {
     int size, rsize;
     mca_coll_inter_module_t *inter_module;
+    
+    OMPI_LOG_PRINT("coll inter query");
 
     /* This module only works for inter-communicators */
     if (!OMPI_COMM_IS_INTER(comm)) {

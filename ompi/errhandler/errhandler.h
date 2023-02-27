@@ -29,7 +29,7 @@
 
 #ifndef OMPI_ERRHANDLER_H
 #define OMPI_ERRHANDLER_H
-
+#include <stdarg.h>
 #include "ompi_config.h"
 
 #include "mpi.h"
@@ -56,6 +56,22 @@ enum {
   OMPI_ERRORS_ABORT_FORTRAN,
 };
 
+extern int OMPI_LOG_USE;
+extern int OMPI_DBG_BREAK;
+extern void * p_OMPI_LOG_DATA;
+void ompi_segfault();
+
+static inline void ompi_log_invoke(const char * format, const char * file, const char * func, int line, ...){
+    va_list args;
+    va_start(args, format);
+    printf("\nSRR OMPI >> "); vprintf(format, args);
+    printf("\n            %s,  %s, %i\n", file, func, line);
+    printf("\n");
+    va_end(args);
+}
+
+#define OMPI_LOG_PRINT(format, ...) ompi_log_invoke((format), __FILE__, __FUNCTION__, __LINE__ __VA_OPT__(, ) __VA_ARGS__);
+#define OMPI_SEGFAULT ompi_segfault();
 
 /**
  * Typedef for all fortran errhandler functions

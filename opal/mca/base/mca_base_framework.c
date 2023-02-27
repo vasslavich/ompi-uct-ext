@@ -14,6 +14,7 @@
  * $HEADER$
  */
 
+#include "ompi/errhandler/errhandler.h"
 #include "opal/include/opal_config.h"
 
 #include "opal/include/opal/constants.h"
@@ -162,17 +163,23 @@ int mca_base_framework_open(struct mca_base_framework_t *framework, mca_base_ope
     int ret;
 
     assert(NULL != framework);
+    
+    OMPI_LOG_PRINT("mca_base_framework_open");
 
     /* register this framework before opening it */
     ret = mca_base_framework_register(framework, MCA_BASE_REGISTER_DEFAULT);
     if (OPAL_SUCCESS != ret) {
         return ret;
     }
+    
+    OMPI_LOG_PRINT("mca_base_framework_open");
 
     /* check if this framework is already open */
     if (mca_base_framework_is_open(framework)) {
         return OPAL_SUCCESS;
     }
+    
+    OMPI_LOG_PRINT("mca_base_framework_open");
 
     if (MCA_BASE_FRAMEWORK_FLAG_NOREGISTER & framework->framework_flags) {
         flags |= MCA_BASE_OPEN_FIND_COMPONENTS;
@@ -184,15 +191,21 @@ int mca_base_framework_open(struct mca_base_framework_t *framework, mca_base_ope
 
     /* lock all of this frameworks's variables */
     ret = mca_base_var_group_find(framework->framework_project, framework->framework_name, NULL);
+    OMPI_LOG_PRINT("mca_base_framework_open");
+    
     mca_base_var_group_set_var_flag(ret, MCA_BASE_VAR_FLAG_SETTABLE, false);
+    OMPI_LOG_PRINT("mca_base_framework_open");
 
     /* check the verbosity level and open (or close) the output */
     framework_open_output(framework);
-
+    OMPI_LOG_PRINT("mca_base_framework_open");
+    
     if (NULL != framework->framework_open) {
         ret = framework->framework_open(flags);
+        OMPI_LOG_PRINT("mca_base_framework_open");
     } else {
         ret = mca_base_framework_components_open(framework, flags);
+        OMPI_LOG_PRINT("mca_base_framework_open");
     }
 
     if (OPAL_SUCCESS != ret) {

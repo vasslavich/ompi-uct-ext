@@ -25,6 +25,7 @@
 #include "opal/memoryhooks/memory.h"
 #include "opal/util/argv.h"
 #include "opal/util/printf.h"
+#include "ompi/errhandler/errhandler.h"
 
 #include <fnmatch.h>
 #include <stdio.h>
@@ -291,6 +292,7 @@ OPAL_DECLSPEC opal_common_ucx_support_level_t opal_common_ucx_support_level(ucp_
         /* Check if 'rsc_tl_name' is found  provided list */
         found_tl = is_any_tl;
         for (list_item = tl_list; !found_tl && (*list_item != NULL); ++list_item) {
+            OMPI_LOG_PRINT("check tl %s ? %s", *list_item, rsc_tl_name);
             found_tl = !strcmp(*list_item, rsc_tl_name);
         }
 

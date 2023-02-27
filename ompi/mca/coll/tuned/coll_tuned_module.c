@@ -58,6 +58,7 @@ ompi_coll_tuned_comm_query(struct ompi_communicator_t *comm, int *priority)
 {
     mca_coll_tuned_module_t *tuned_module;
 
+    OMPI_LOG_PRINT("coll tuned query");
     OPAL_OUTPUT((ompi_coll_tuned_stream, "coll:tuned:module_tuned query called"));
 
     /**
@@ -94,6 +95,7 @@ ompi_coll_tuned_comm_query(struct ompi_communicator_t *comm, int *priority)
      * when the module get enabled, set the correct version based on the availability
      * of the dynamic rules.
      */
+    OMPI_LOG_PRINT("coll tuned query 1");
     tuned_module->super.coll_allgather  = ompi_coll_tuned_allgather_intra_dec_fixed;
     tuned_module->super.coll_allgatherv = ompi_coll_tuned_allgatherv_intra_dec_fixed;
     tuned_module->super.coll_allreduce  = ompi_coll_tuned_allreduce_intra_dec_fixed;
@@ -208,6 +210,8 @@ tuned_module_enable( mca_coll_base_module_t *module,
     }
 
     if (ompi_coll_tuned_use_dynamic_rules) {
+        OMPI_LOG_PRINT("coll tuned query 2");
+        
         OPAL_OUTPUT((ompi_coll_tuned_stream,"coll:tuned:module_init MCW & Dynamic"));
 
         /**

@@ -40,6 +40,16 @@
 #include "opal/mca/backtrace/backtrace.h"
 #include "ompi/runtime/mpiruntime.h"
 
+int OMPI_LOG_USE = 1;
+int OMPI_DBG_BREAK = 0;
+void* p_OMPI_LOG_DATA = NULL;
+
+void ompi_segfault(){
+    if(OMPI_DBG_BREAK) {
+        *((int *) p_OMPI_LOG_DATA) = 1;
+    }
+}
+
 /*
  * Table for Fortran <-> C errhandler handle conversion
  */

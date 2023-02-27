@@ -36,7 +36,7 @@
 #include "opal/util/argv.h"
 #include "opal/util/output.h"
 #include "opal/util/show_help.h"
-
+#include "ompi/errhandler/errhandler.h"
 /*
  * Local functions
  */
@@ -287,11 +287,14 @@ int mca_base_framework_components_open(mca_base_framework_t *framework, mca_base
         bool open_dso_components = !(flags & MCA_BASE_OPEN_STATIC_ONLY);
         /* Find and load requested components */
         int ret = mca_base_component_find(NULL, framework, false, open_dso_components);
+        OMPI_LOG_PRINT("mca_base_framework_components_open");
+        
         if (OPAL_SUCCESS != ret) {
             return ret;
         }
     }
 
+    OMPI_LOG_PRINT("mca_base_framework_components_open");
     /* Open all registered components */
     return open_components(framework);
 }

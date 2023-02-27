@@ -95,6 +95,8 @@ mca_coll_sync_comm_query(struct ompi_communicator_t *comm,
                          int *priority)
 {
     mca_coll_sync_module_t *sync_module;
+    
+    OMPI_LOG_PRINT("coll sync query");
 
     /* If both MCA params are 0, then disqualify us */
     if (0 == mca_coll_sync_component.barrier_before_nops &&

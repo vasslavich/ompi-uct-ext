@@ -20,6 +20,8 @@
  */
 #include "ompi_config.h"
 #include <stdio.h>
+#include <assert.h>
+#include <signal.h>
 
 #include "ompi/mpi/c/bindings.h"
 #include "ompi/runtime/params.h"
@@ -121,7 +123,9 @@ int MPI_Bcast(void *buffer, int count, MPI_Datatype datatype,
     }
 
     /* Invoke the coll component to perform the back-end operation */
-
+    OMPI_LOG_PRINT("bcast from %i, count %i", root, count);
+    OMPI_SEGFAULT;
+    
     err = comm->c_coll->coll_bcast(buffer, count, datatype, root, comm,
                                   comm->c_coll->coll_bcast_module);
     OMPI_ERRHANDLER_RETURN(err, comm, err, FUNC_NAME);

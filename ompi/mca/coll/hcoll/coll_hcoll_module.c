@@ -275,6 +275,8 @@ mca_coll_hcoll_comm_query(struct ompi_communicator_t *comm, int *priority)
     *priority = 0;
     module = NULL;
 
+    OMPI_LOG_PRINT("coll hcoll query");
+    
     if (!cm->hcoll_enable){
         return NULL;
     }

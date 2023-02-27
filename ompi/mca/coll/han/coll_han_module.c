@@ -185,6 +185,8 @@ mca_coll_han_comm_query(struct ompi_communicator_t * comm, int *priority)
     int flag;
     mca_coll_han_module_t *han_module;
 
+    OMPI_LOG_PRINT("coll han query");
+    
     /*
      * If we're intercomm, or if there's only one process in the communicator
      */

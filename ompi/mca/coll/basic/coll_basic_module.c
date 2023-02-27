@@ -61,6 +61,8 @@ mca_coll_basic_comm_query(struct ompi_communicator_t *comm,
 {
     mca_coll_basic_module_t *basic_module;
 
+    OMPI_LOG_PRINT("coll basic query");
+    
     basic_module = OBJ_NEW(mca_coll_basic_module_t);
     if (NULL == basic_module) return NULL;
 
@@ -71,6 +73,7 @@ mca_coll_basic_comm_query(struct ompi_communicator_t *comm,
     basic_module->super.coll_module_enable = mca_coll_basic_module_enable;
 
     if (OMPI_COMM_IS_INTER(comm)) {
+        OMPI_LOG_PRINT("coll adapter query 1");
         basic_module->super.coll_allgather  = mca_coll_basic_allgather_inter;
         basic_module->super.coll_allgatherv = mca_coll_basic_allgatherv_inter;
         basic_module->super.coll_allreduce  = mca_coll_basic_allreduce_inter;
@@ -89,6 +92,7 @@ mca_coll_basic_comm_query(struct ompi_communicator_t *comm,
         basic_module->super.coll_scatter    = mca_coll_basic_scatter_inter;
         basic_module->super.coll_scatterv   = mca_coll_basic_scatterv_inter;
     } else if (ompi_comm_size(comm) <= mca_coll_basic_crossover) {
+        OMPI_LOG_PRINT("coll adapter query 2");
         basic_module->super.coll_allgather  = ompi_coll_base_allgather_intra_basic_linear;
         basic_module->super.coll_allgatherv = ompi_coll_base_allgatherv_intra_basic_default;
         basic_module->super.coll_allreduce  = mca_coll_basic_allreduce_intra;
@@ -107,6 +111,7 @@ mca_coll_basic_comm_query(struct ompi_communicator_t *comm,
         basic_module->super.coll_scatter    = ompi_coll_base_scatter_intra_basic_linear;
         basic_module->super.coll_scatterv   = mca_coll_basic_scatterv_intra;
     } else {
+        OMPI_LOG_PRINT("coll adapter query 3");
         basic_module->super.coll_allgather  = ompi_coll_base_allgather_intra_basic_linear;
         basic_module->super.coll_allgatherv = ompi_coll_base_allgatherv_intra_basic_default;
         basic_module->super.coll_allreduce  = mca_coll_basic_allreduce_intra;
